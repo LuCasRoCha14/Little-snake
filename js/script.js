@@ -56,10 +56,10 @@ const drawFood = () => {
 }
 
 const  drawSnake = () => {
-    ctx.fillStyle = "#ddd"
+    ctx.fillStyle = "#006400"
     snake.forEach((position, index) => {
         if (index == snake.length - 1) {
-            ctx.fillStyle = "red"
+            ctx.fillStyle = "green"
         }
         ctx.fillRect(position.x, position.y, size, size)
     } )
