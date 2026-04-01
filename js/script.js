@@ -7,12 +7,26 @@ const menu = document.querySelector(".menu-screen")
 const buttonPlay = document.querySelector(".btn-play")
 
 const audio = new Audio('../assents/audio.mp3')
+const jumpscareVideo = document.createElement('video')
+
+jumpscareVideo.src = '../assents/nemesius.mp4'
+jumpscareVideo.style.display = 'none'
+jumpscareVideo.style.position = 'fixed'
+jumpscareVideo.style.top = '0'
+jumpscareVideo.style.left = '0'
+jumpscareVideo.style.width = '100vw'
+jumpscareVideo.style.height = '100vh'
+jumpscareVideo.style.objectFit = 'cover'
+jumpscareVideo.style.zIndex = '9999'
+document.body.appendChild(jumpscareVideo)
+
 
 const size = 30
 
 const initialPosition = { x: 270, y: 240 }
 
 let snake = [{ x: 270, y: 240 }]
+let isGameOver = false 
 
 const incrementScore = () => {
     score.innerText = parseInt(score.innerText) + 10
@@ -156,6 +170,20 @@ const gameOver = () => {
     menu.style.display =  "flex" 
     FinalScore.innerText = score.innerText
     canvas.style.filter = "blur(2px)"
+
+    if (isGameOver) return //isso aqui que garante que o vídeo fique repetindo
+    isGameOver = true
+
+    jumpscareVideo.style.display = "block"
+jumpscareVideo.play()
+
+jumpscareVideo.onended = () => {
+        jumpscareVideo.style.display = "none"
+        menu.style.display =  "flex" 
+        FinalScore.innerText = score.innerText
+        canvas.style.filter = "blur(2px)"
+}
+
 }
 
 const gameloop = () => {
@@ -192,6 +220,8 @@ document.addEventListener("keydown", ({ key }) => {
     if (key == "w" && direction != "down") {
         direction = "up"
     }
+
+    if (isGameOver) return
     
 })
 
@@ -200,4 +230,5 @@ buttonPlay.addEventListener("click", () => {
     menu.style.display = "none"
     canvas.style.filter = "none"
     snake = [{ x: 270, y: 240 }]
+    isGameOver = false
 })
