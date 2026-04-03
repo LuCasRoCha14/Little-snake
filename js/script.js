@@ -1,15 +1,16 @@
-const canvas = document.querySelector('canvas')
+const canvas = document.querySelector('canvas') // Seleciona o canvas e o contexto 2D onde o jogo será desenhado
 const ctx = canvas.getContext("2d")
 
-const score = document.querySelector(".score--value")
+const score = document.querySelector(".score--value") // Elementos da interfac
 const FinalScore = document.querySelector(".final-score > span")
 const menu = document.querySelector(".menu-screen")
 const buttonPlay = document.querySelector(".btn-play")
 
-const audio = new Audio('../assents/audio.mp3')
-const jumpscareVideo = document.createElement('video')
+const audio = new Audio('../assents/audio.mp3') // Áudio quando a cobra come a comida
 
-jumpscareVideo.src = '../assents/nemesius.mp4'
+const jumpscareVideo = document.createElement('video') // Cria o vídeo do jumpscare
+
+jumpscareVideo.src = '../assents/nemesius.mp4' // Estilização do vídeo para ocupar a tela toda
 jumpscareVideo.style.display = 'none'
 jumpscareVideo.style.position = 'fixed'
 jumpscareVideo.style.top = '0'
@@ -18,30 +19,37 @@ jumpscareVideo.style.width = '100vw'
 jumpscareVideo.style.height = '100vh'
 jumpscareVideo.style.objectFit = 'cover'
 jumpscareVideo.style.zIndex = '9999'
-document.body.appendChild(jumpscareVideo)
+document.body.appendChild(jumpscareVideo) // Adiciona o vídeo no body do HTML
 
+// Tamanho de cada bloco da cobra e comida
+const size = 30 
 
-const size = 30
-
-const initialPosition = { x: 270, y: 240 }
-
-let snake = [{ x: 270, y: 240 }]
+// Posição inicial da cobra
+const initialPosition = { x: 270, y: 240 } 
+// Array que representa a cobra
+let snake = [{ x: 270, y: 240 }] 
+// // Controle de game over
 let isGameOver = false 
 
-const incrementScore = () => {
+
+// Gera número aleatório entre min e max
+const incrementScore = () => {  // Função que aumenta o score
     score.innerText = parseInt(score.innerText) + 10
 }
 
+/// Gera número aleatório entre min e max
 const randomNumber = (min, max) => {
     return Math.round(Math.random() * (max - min) + min)
 }
 
+// Gera posição aleatória baseada na grade do jogo
 const randomPosition = () => {
     const number =  randomNumber(0, canvas.width - size)
     return Math.round(number / 30) * 30
 
 }
 
+// Gera cor aleatória para a comida
 const randomColor = () => {
     const red = randomNumber(0, 255)
     const green = randomNumber(0, 255)
@@ -50,14 +58,17 @@ const randomColor = () => {
     return `rgb(${red}, ${green}, ${blue})`
 }
 
+// Objeto da comida
 const food = {
     x:randomPosition(),
     y:randomPosition(),
     color: randomColor()
 }
 
+// Direção da cobra e ID do loop
 let direction, loopId
 
+// desenha da comida
 const drawFood = () => {
 
     const { x, y, color } = food
@@ -69,6 +80,7 @@ const drawFood = () => {
     ctx.shadowBlur = 0
 }
 
+// desenha a cobra
 const  drawSnake = () => {
     ctx.fillStyle = "#006400"
     snake.forEach((position, index) => {
@@ -79,6 +91,7 @@ const  drawSnake = () => {
     } )
 }
 
+// movimentação da cobra
 const moveSnake = () => {
     if (!direction) return
     
@@ -103,6 +116,7 @@ const moveSnake = () => {
     snake.shift()
 }
 
+// desenha a grade do jogo
 const drawGrid = () => {
     ctx.lineWidth = 1
     ctx.strokeStyle = "#191919"
@@ -124,6 +138,7 @@ const drawGrid = () => {
 
 }
 
+// verifica se a cobra comeu a comdia
 const chackEat = () => {
     const head = snake[snake.length - 1]
 
@@ -134,7 +149,8 @@ const chackEat = () => {
 
         let x = randomPosition()
         let y = randomPosition()
-
+        
+         // Evita nascer comida em cima da cobra
         while (snake.find((position) => position.x == x && position.y == y)) {
         x = randomPosition()
         y = randomPosition()
@@ -148,6 +164,7 @@ const chackEat = () => {
 
 }
 
+// Verifica colisão com parede ou com a própria cobra
 const checkCollision = () => {
     const head = snake[snake.length - 1]
     const canvasLimit = canvas.width - size
@@ -164,6 +181,7 @@ const checkCollision = () => {
     }
 }
 
+// função do gamer over
 const gameOver = () => {
     direction = undefined
 
@@ -186,6 +204,7 @@ jumpscareVideo.onended = () => {
 
 }
 
+// Loop principal do jogo
 const gameloop = () => {
     clearInterval(loopId)
     
@@ -202,8 +221,10 @@ const gameloop = () => {
     }, 300)
 }
 
+// Inicia o jogo
 gameloop()
 
+// Controles do teclado
 document.addEventListener("keydown", ({ key }) => {
     if (key == "d" && direction != "left") {
         direction = "right"
@@ -225,6 +246,7 @@ document.addEventListener("keydown", ({ key }) => {
     
 })
 
+// Botão de jogar novamente
 buttonPlay.addEventListener("click", () => {
     score.innerText = "00"
     menu.style.display = "none"
